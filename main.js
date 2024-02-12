@@ -1,8 +1,25 @@
-let catalogoCajas = [
-  { modelo: "Argo", contenido: "Vinos", precio: 1500 },
-  { modelo: "Greta", contenido: "Té", precio: 1300 },
-  { modelo: "Justa", contenido: "Cafe", precio: 1200 },
-];
+let catalogoCajas = [];
+
+function cargarCatalogoDesdeJSON() {
+  fetch('./catalogoCajas.json') 
+    .then(response => response.json())
+    .then(data => {
+      catalogoCajas = data;
+      console.log('Catálogo cargado:', catalogoCajas);
+      // Verificar si hay un modelo buscado previamente y mostrarlo
+      cargarUltimoModeloBuscado();
+    })
+    .catch(error => console.error("Error al cargar el catálogo de cajas:", error));
+}
+
+function cargarUltimoModeloBuscado() {
+  const ultimoModeloBuscado = localStorage.getItem("ultimoModeloBuscado");
+  if (ultimoModeloBuscado) {
+      document.getElementById("modeloInput").value = ultimoModeloBuscado;
+      let cajaEncontrada = buscarCajasPorModelo(ultimoModeloBuscado);
+      mostrarInformacionCajas(cajaEncontrada);
+  }
+}
 
 document.getElementById("buscarButton").addEventListener("click", function() {
   let modeloUsuario = document.getElementById("modeloInput").value;
@@ -11,34 +28,28 @@ document.getElementById("buscarButton").addEventListener("click", function() {
   localStorage.setItem("ultimoModeloBuscado", modeloUsuario);
 
   // Buscar la caja y mostrar la información
-  let cajasEncontrado = buscarCajasPorModelo(modeloUsuario);
-  mostrarInformacionCajas(cajasEncontrado);
+  let cajaEncontrada = buscarCajasPorModelo(modeloUsuario);
+  mostrarInformacionCajas(cajaEncontrada);
 });
 
 function buscarCajasPorModelo(modelo) {
-  return catalogoCajas.find(cajas => cajas.modelo.toLowerCase() === modelo.toLowerCase());
+  return catalogoCajas.find(caja => caja.modelo.toLowerCase() === modelo.toLowerCase());
 }
 
-function mostrarInformacionCajas(cajas) {
+function mostrarInformacionCajas(caja) {
   let resultado = document.getElementById("resultado");
 
-  if (cajas) {
+  if (caja) {
       resultado.innerHTML = `
-          <p>Modelo: ${cajas.modelo}</p>
-          <p>Contenido: ${cajas.contenido}</p>
-          <p>Precio: $${cajas.precio}</p>
+          <p>Modelo: ${caja.modelo}</p>
+          <p>Contenido: ${caja.contenido}</p>
+          <p>Precio: $${caja.precio}</p>
       `;
   } else {
-      resultado.innerHTML = "<p>Caja no encontrado en el catálogo.</p>";
+      resultado.innerHTML = "<p>Caja no encontrada en el catálogo.</p>";
   }
 }
 
-// Cargar el último modelo buscado al recargar la página
 window.onload = function() {
-  const ultimoModeloBuscado = localStorage.getItem("ultimoModeloBuscado");
-  if (ultimoModeloBuscado) {
-      document.getElementById("modeloInput").value = ultimoModeloBuscado;
-      let cajasEncontrado = buscarCajasPorModelo(ultimoModeloBuscado);
-      mostrarInformacionCajas(cajasEncontrado);
-  }
-};
+  cargarCatalogoDesdeJSON();
+}

@@ -1,0 +1,5 @@
+[
+    { "modelo": "Argo", "contenido": "Vinos", "precio": 1500 },
+    { "modelo": "Greta", "contenido": "Té", "precio": 1300 },
+    { "modelo": "Justa", "contenido": "Cafe", "precio": 1200 }
+  ]
