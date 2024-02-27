@@ -45,10 +45,12 @@ function mostrarInformacionCajas(caja) {
           <p>Contenido: ${caja.contenido}</p>
           <p>Precio: $${caja.precio}</p>
       `;
+      swal("Caja encontrada", `Modelo: ${caja.modelo}`, "success");
   } else {
-      resultado.innerHTML = "<p>Caja no encontrada en el catálogo.</p>";
+      swal("Caja no encontrada", "La caja solicitada no se encuentra en el catálogo.", "error");
   }
 }
+
 
 window.onload = function() {
   cargarCatalogoDesdeJSON();
